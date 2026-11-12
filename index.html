@@ -123,9 +123,12 @@ footer a{color:var(--rose);text-decoration:none;border-bottom:1px solid var(--tr
   <div class="code"><div class="bar"><span>apples.do</span><button type="button" data-copy="c1">Copy</button></div><pre id="c1"><span class="c">* Week 7. Apple prices. Change the path to where you saved the file.</span>
 clear all
 import delimited "apples.csv", clear
-describe</pre></div>
+describe
+list in 1/8</pre></div>
   <div class="out"><div class="bar">Stata should return</div><pre id="o1"></pre></div>
   <p class="aux">Two variables are strings, marked str. Stata can count them but not average them.</p>
+  <div class="out"><div class="bar">Stata should return · the first eight rows</div><pre id="o1b"></pre></div>
+  <p class="aux">One row per town per year. Town01 appears six times, 2018 to 2023.</p>
 </section>
 
 <div class="node"><div class="stem"></div><div class="dot"></div><span class="tag">Station II · Clean</span></div>
@@ -272,6 +275,13 @@ regress price i.east##i.post, vce(cluster town_id)</pre></div>
   vars1.forEach(([v,t,f])=>{ o1+=lpad(v,14)+lpad(t,10)+lpad(f,11)+'\n'; });
   o1+='-'.repeat(78)+'\nSorted by: \n     Note: Dataset has changed since last saved.';
   $('o1').textContent=o1;
+  (function(){ const cols=[['town',6,r=>r.town],['region',6,r=>r.region],['year',4,r=>r.year],['price_p',7,r=>r.price.toFixed(1)],['rain_mm',7,r=>r.rain],['income_k',8,r=>r.income.toFixed(1)],['impor~e',7,r=>String(r.imp).replace(/^0/,'')]];
+    const line=cells=>'     | '+cells.join('   ')+' |';
+    const width=line(cols.map(c=>' '.repeat(c[1]))).length-7;
+    let o='. list in 1/8\n\n     +'+'-'.repeat(width)+'+\n'+line(cols.map(c=>pad(c[0],c[1])))+'\n     |'+'-'.repeat(width)+'|\n';
+    D.slice(0,8).forEach((r,i)=>{ o+=pad((i+1)+'.',4)+' | '+cols.map(c=>pad(c[2](r),c[1])).join('   ')+' |\n'; });
+    o+='     +'+'-'.repeat(width)+'+';
+    $('o1b').textContent=o; })();
 
   // ---- Station II ----
   const vars2=[['price','float','%9.0g','','Apple price, pence per kg'],['rain','int','%8.0g','','Annual rainfall, mm'],['income','float','%9.0g','','Median household income, £000'],['town_id','long','%8.0g','town_id','Town']];
