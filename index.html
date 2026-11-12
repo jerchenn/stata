@@ -89,10 +89,10 @@ textarea{border-radius:12px;width:100%;max-width:62ch;min-height:70px;resize:ver
 .em{color:var(--rose);white-space:nowrap}
 .closing .quote{font-style:italic;font-size:1.25rem;max-width:56ch;border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);padding:12px 6px;color:var(--ink);margin:0 auto}
 .closing a{color:var(--rose);text-decoration:none;border-bottom:1px solid var(--trim)}
-footer{margin-top:34px;margin-inline:-16px;background:var(--pink);color:var(--rose);border-top:1px solid var(--trim);padding:18px 16px;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;font-size:.8rem;letter-spacing:.2em;text-transform:uppercase}
-footer>:first-child{justify-self:start} footer>:nth-child(2){justify-self:center;color:var(--trim-dk);letter-spacing:.5em;padding-left:.5em} footer>:last-child{justify-self:end}
+footer{margin-top:34px;margin-inline:-16px;background:var(--pink);color:var(--rose);border-top:1px solid var(--trim);padding:18px 16px;display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:14px;font-size:.8rem;letter-spacing:.2em;text-transform:uppercase}
+footer .orn{color:var(--trim-dk);letter-spacing:.5em;padding-left:.5em}
 footer a{color:var(--rose);text-decoration:none;border-bottom:1px solid var(--trim)}
-@media (max-width:560px){footer{grid-template-columns:1fr;gap:6px;text-align:center} footer>*{justify-self:center!important}}
+
 </style>
 
 <div class="wrap">
@@ -246,7 +246,7 @@ regress price i.east##i.post, vce(cluster town_id)</pre></div>
   <div class="closing"><div class="quote">The first regression says what moves with price. The second says what moved price, and only because the frost chose the treated towns the way a random host opens doors. The assumption that does the work is parallel trends, and the pre-2021 lines are its only witness. The <a href="https://jerchenn.github.io/monty-hall/">three doors</a> explain why the rule matters more than the table.</div></div>
 </section>
 
-<footer><span><a href="https://jerchenn.github.io/orchard/">Orchard Census</a></span><span>✦ · ✦</span><span><a href="https://jerchenn.github.io/monty-hall/">Monty Hall</a></span></footer>
+<footer><span><a href="https://jerchenn.github.io/monty-hall/">Monty Hall</a></span><span class="orn">✦</span><span><a href="https://jerchenn.github.io/orchard/">Orchard Census</a></span><span class="orn">✦</span><span>The Do-File</span></footer>
 </div>
 
 <script src="data.js"></script>
