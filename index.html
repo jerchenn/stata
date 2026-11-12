@@ -12,9 +12,9 @@
 <body>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap">
 <style>
-/* Third page of the set. GBH tokens, pale beige canvas, green-family accent, pink anchored as the regression cabinet and the footer band. T-Progress, six stations: import · clean · describe · graph · regress · interpret. */
+/* Third page of the set. GBH tokens, Morandi mint canvas, green-family accent, pink anchored as the regression cabinet and the footer band. T-Progress, six stations: import · clean · describe · graph · regress · interpret. */
 :root{
-  --canvas:#FAF4E8; --canvas-lt:#FDF9F1; --canvas-dk:#F2EAD9; --pink:#E3A6AC; --pink-lt:#E9B4B9; --pink-dk:#D99AA1;
+  --canvas:#C3D1C4; --canvas-lt:#CEDACF; --canvas-dk:#B6C6B8; --pink:#E3A6AC; --pink-lt:#E9B4B9; --pink-dk:#D99AA1;
   --surface:#9FB295; --surface-lt:#B8C6AE; --stroke:#637040; --blue:#A2AEBE; --blue-lt:#BFC8D3; --blue-dk:#4F5D75;
   --text:#A34860; --mauve:#BFA0AC; --mauve-lt:#DFCBD2; --trim:#C8A030; --trim-dk:#9A7B24;
   --neutral:#F0E8D8; --label-bg:#FAF4E8; --butter:#F4DBB2; --celadon:#CBE3DE;
@@ -26,7 +26,7 @@
 *{box-sizing:border-box}
 [hidden]{display:none!important}
 body{margin:0;background:var(--canvas);background-image:linear-gradient(172deg,var(--canvas-lt) 0%,var(--canvas) 55%,var(--canvas-dk) 100%);color:var(--ink);font-family:var(--display);font-size:19px;line-height:1.5;padding-block:36px 0;padding-inline:16px;position:relative}
-body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;opacity:.08;
+body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;opacity:.10;
   background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='40'%3E%3Cg fill='none' stroke='%239A7B24' stroke-width='1.3'%3E%3Crect x='0' y='0' width='40' height='20'/%3E%3Crect x='40' y='0' width='40' height='20'/%3E%3Crect x='-20' y='20' width='40' height='20'/%3E%3Crect x='20' y='20' width='40' height='20'/%3E%3Crect x='60' y='20' width='40' height='20'/%3E%3C/g%3E%3C/svg%3E");background-size:80px 40px}
 body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;mix-blend-mode:multiply;opacity:.06;
   background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E")}
@@ -43,10 +43,10 @@ p{margin:0 auto;max-width:62ch}
 .node{display:grid;justify-items:center;padding-block:26px}
 .node .stem{width:1px;height:28px;background:var(--trim)}
 .node .dot{width:11px;height:11px;background:var(--trim);transform:rotate(45deg);margin:6px 0}
-.node .tag{margin-top:6px}
+.node .tag{margin-top:6px;background:var(--neutral)}
 .frame{position:relative;background:var(--neutral);border:1px solid var(--trim);border-radius:14px;padding:26px 22px 28px;display:grid;gap:16px;justify-items:center}
 .frame::after{content:"";position:absolute;inset:6px;border:1px solid var(--trim);border-radius:9px;pointer-events:none}
-.frame.mint{background:var(--surface-lt)} .frame.butter{background:var(--butter)} .frame.celadon{background:var(--celadon)} .frame.blue{background:var(--blue-lt)} .frame.mauve{background:var(--mauve-lt)}
+.frame.mint{background:var(--neutral)} .frame.butter{background:var(--butter)} .frame.celadon{background:var(--label-bg)} .frame.blue{background:var(--blue-lt)} .frame.mauve{background:var(--mauve-lt)}
 .frame.pink{background:var(--pink);background-image:linear-gradient(170deg,var(--pink-lt),var(--pink) 60%,var(--pink-dk))}
 .frame>*{position:relative;z-index:1}
 .hero{width:100%;max-width:760px;aspect-ratio:1400/636;overflow:hidden;border:1px solid var(--trim);border-radius:10px;position:relative;background:var(--mauve-lt)}
@@ -113,7 +113,7 @@ footer a{color:var(--neutral);text-decoration:none;border-bottom:1px solid var(-
   </div>
   <div class="row" role="tablist" aria-label="Information">
     <button type="button" class="btn" role="tab" id="tabRules" aria-selected="false" aria-controls="rules">How to use this page</button>
-    <a class="btn" href="orchards.csv" download>Download orchards.csv</a>
+    <a class="btn" id="dl" href="orchards.csv" download>Download orchards.csv</a>
   </div>
   <div class="tabpanel" id="rules" role="tabpanel" hidden>
     <p>The dataset is 120 orchards: region, variety, whether organic, age of the trees, rainfall, number of trees, and yield in kilograms per tree. Download the file, open Stata, and work down the page. Each station gives the commands to type into a do-file and the output Stata should return for this dataset, so you can check your own screen against the page. The last station checks whether you read the regression correctly.</p>
@@ -244,6 +244,8 @@ regress yield rain age organic, robust</pre></div>
   document.querySelectorAll('[data-copy]').forEach(b=>b.addEventListener('click',()=>{ const t=$(b.dataset.copy).textContent; const ok=()=>{ b.textContent='Copied'; setTimeout(()=>b.textContent='Copy',1500); };
     if(navigator.clipboard&&navigator.clipboard.writeText) navigator.clipboard.writeText(t).then(ok).catch(()=>{ b.textContent='Select and copy'; }); else b.textContent='Select and copy'; }));
 
+  (async()=>{ if(!(window.claude&&window.claude.use)) return; const dl=await window.claude.use('downloads'); if(!dl) return;
+    $('dl').addEventListener('click',async e=>{ e.preventDefault(); try{ const txt=await (await fetch('orchards.csv')).text(); await dl.save({filename:'orchards.csv',data:txt}); }catch(err){} }); })();
   // ---- data ----
   const D=ROWS.map(r=>({id:r[0],region:r[1],variety:r[2],organic:r[3],age:r[4],rain:r[5],trees:r[6],yield:r[7]}));
   const n=D.length;
