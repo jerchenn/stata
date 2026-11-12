@@ -1,0 +1,372 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>The Do-File</title>
+<link rel="icon" type="image/png" sizes="64x64" href="img/favicon-64.png?v=3">
+<link rel="icon" type="image/png" sizes="256x256" href="img/favicon-256.png?v=3">
+<link rel="apple-touch-icon" href="img/apple-touch-icon.png?v=3">
+<style>:root{color-scheme:light}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+</head>
+<body>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Third page of the set. GBH tokens, pale beige canvas, green-family accent, pink anchored as the regression cabinet and the footer band. T-Progress, six stations: import · clean · describe · graph · regress · interpret. */
+:root{
+  --canvas:#FAF4E8; --canvas-lt:#FDF9F1; --canvas-dk:#F2EAD9; --pink:#E3A6AC; --pink-lt:#E9B4B9; --pink-dk:#D99AA1;
+  --surface:#9FB295; --surface-lt:#B8C6AE; --stroke:#637040; --blue:#A2AEBE; --blue-lt:#BFC8D3; --blue-dk:#4F5D75;
+  --text:#A34860; --mauve:#BFA0AC; --mauve-lt:#DFCBD2; --trim:#C8A030; --trim-dk:#9A7B24;
+  --neutral:#F0E8D8; --label-bg:#FAF4E8; --butter:#F4DBB2; --celadon:#CBE3DE;
+  --ink:#2C1F14; --ink-warm:#6E5140; --rule:#D8C8A0;
+  --display:"Cormorant Garamond","Cormorant",Garamond,"Times New Roman",serif;
+  --mono:"IBM Plex Mono","Courier New",monospace;
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{margin:0;background:var(--canvas);background-image:linear-gradient(172deg,var(--canvas-lt) 0%,var(--canvas) 55%,var(--canvas-dk) 100%);color:var(--ink);font-family:var(--display);font-size:19px;line-height:1.5;padding-block:36px 0;padding-inline:16px;position:relative}
+body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;opacity:.08;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='40'%3E%3Cg fill='none' stroke='%239A7B24' stroke-width='1.3'%3E%3Crect x='0' y='0' width='40' height='20'/%3E%3Crect x='40' y='0' width='40' height='20'/%3E%3Crect x='-20' y='20' width='40' height='20'/%3E%3Crect x='20' y='20' width='40' height='20'/%3E%3Crect x='60' y='20' width='40' height='20'/%3E%3C/g%3E%3C/svg%3E");background-size:80px 40px}
+body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;mix-blend-mode:multiply;opacity:.06;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E")}
+.wrap{position:relative;z-index:1;max-width:920px;margin:0 auto;display:grid;gap:0;justify-items:center;text-align:center}
+.wrap>*{width:100%}
+h1,h2,h3{font-family:var(--display);font-weight:300;line-height:1.1;text-wrap:balance;margin:0;text-transform:uppercase;letter-spacing:.18em;color:var(--text)}
+h1{font-size:clamp(2.4rem,7vw,4.4rem);letter-spacing:.26em;padding-left:.26em}
+h3{font-size:1.2rem;letter-spacing:.14em}
+p{margin:0 auto;max-width:62ch}
+.aux{font-size:.95rem;color:var(--ink-warm);font-style:italic}
+.tag{font-family:var(--mono);font-size:11px;letter-spacing:.2em;text-transform:uppercase;border:1px solid var(--trim);color:var(--text);padding:3px 10px;border-radius:999px;background:var(--label-bg);display:inline-block}
+.sign{display:inline-block;background:var(--text);color:var(--neutral);border:1px solid var(--trim);border-radius:999px;padding:6px 20px;font-size:.9rem;letter-spacing:.24em;text-transform:uppercase}
+.orn{color:var(--trim);letter-spacing:.6em;padding-left:.6em;font-size:.95rem}
+.node{display:grid;justify-items:center;padding-block:26px}
+.node .stem{width:1px;height:28px;background:var(--trim)}
+.node .dot{width:11px;height:11px;background:var(--trim);transform:rotate(45deg);margin:6px 0}
+.node .tag{margin-top:6px}
+.frame{position:relative;background:var(--neutral);border:1px solid var(--trim);border-radius:14px;padding:26px 22px 28px;display:grid;gap:16px;justify-items:center}
+.frame::after{content:"";position:absolute;inset:6px;border:1px solid var(--trim);border-radius:9px;pointer-events:none}
+.frame.mint{background:var(--surface-lt)} .frame.butter{background:var(--butter)} .frame.celadon{background:var(--celadon)} .frame.blue{background:var(--blue-lt)} .frame.mauve{background:var(--mauve-lt)}
+.frame.pink{background:var(--pink);background-image:linear-gradient(170deg,var(--pink-lt),var(--pink) 60%,var(--pink-dk))}
+.frame>*{position:relative;z-index:1}
+.hero{width:100%;max-width:760px;aspect-ratio:1400/636;overflow:hidden;border:1px solid var(--trim);border-radius:10px;position:relative;background:var(--mauve-lt)}
+.hero img{width:100%;height:100%;object-fit:cover;display:block}
+.hero::after{content:"";position:absolute;inset:7px;border:1px solid var(--trim);border-radius:6px;pointer-events:none}
+.credit{font-size:.78rem;margin-top:-8px}
+.title{display:grid;gap:4px;justify-items:center}
+.title .small{font-size:clamp(.9rem,2.2vw,1.2rem);letter-spacing:.5em;padding-left:.5em;color:var(--text);text-transform:uppercase;font-weight:300}
+.btn{font:inherit;font-size:.86rem;letter-spacing:.2em;text-transform:uppercase;padding:9px 20px;border:1px solid var(--trim);background:var(--label-bg);color:var(--text);cursor:pointer;border-radius:999px;text-decoration:none;display:inline-block}
+.btn:focus-visible{outline:2px solid var(--text);outline-offset:3px}
+.btn.primary,.btn[aria-pressed="true"]{background:var(--text);color:var(--neutral)}
+.btn:disabled{opacity:.45;cursor:default}
+.row{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:center}
+.tabpanel{width:100%;max-width:720px;display:grid;gap:12px;justify-items:center;border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);padding:14px 6px}
+.step{display:grid;gap:10px;justify-items:center;width:100%}
+.step p{max-width:62ch}
+/* do-file and output cards */
+.code{width:100%;max-width:760px;text-align:left;border:1px solid var(--trim);border-radius:12px;background:var(--label-bg);overflow:hidden}
+.code .bar{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:6px 12px;border-bottom:1px solid var(--rule);font-family:var(--mono);font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--ink-warm)}
+.code .bar button{font:inherit;font-size:11px;letter-spacing:.2em;text-transform:uppercase;border:1px solid var(--trim);background:var(--neutral);color:var(--text);border-radius:999px;padding:3px 10px;cursor:pointer}
+.code pre{margin:0;padding:12px 14px;font-family:var(--mono);font-size:14px;line-height:1.5;white-space:pre;overflow-x:auto;color:var(--ink)}
+.code pre .c{color:var(--stroke);font-style:italic}
+.out{width:100%;max-width:760px;text-align:left;border:1px solid var(--trim);border-radius:12px;background:#2C1F14;color:#F0E8D8;overflow:hidden}
+.out .bar{padding:6px 12px;border-bottom:1px solid rgba(240,232,216,.25);font-family:var(--mono);font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:#C9B896}
+.out pre{margin:0;padding:12px 14px;font-family:var(--mono);font-size:13px;line-height:1.45;white-space:pre;overflow-x:auto}
+.out pre .k{color:#F4DBB2}
+.out pre .h{cursor:pointer;border-bottom:1px dotted #C9B896}
+.out pre .h:hover,.out pre .h[aria-pressed="true"]{background:rgba(227,166,172,.35)}
+.note{width:100%;max-width:760px;text-align:left;border:1px solid var(--trim);border-radius:12px;background:var(--label-bg);padding:12px 16px;font-size:1rem;min-height:3.2em}
+.note b{font-weight:400;color:var(--text)}
+canvas{width:100%;height:auto;display:block;border:1px solid var(--trim);border-radius:10px;background:var(--label-bg)}
+.pair{display:grid;grid-template-columns:1fr 1fr;gap:16px;width:100%;align-items:stretch}
+@media (max-width:620px){.pair{grid-template-columns:1fr}}
+.pair>div{display:grid;gap:8px}
+.ask{width:100%;max-width:760px;border:1px solid var(--trim);border-radius:12px;background:var(--label-bg);padding:14px 16px;display:grid;gap:10px;justify-items:center}
+.ask .q{font-size:1.05rem;max-width:62ch}
+.ask .fb{font-size:.95rem;color:var(--ink-warm);font-style:italic;min-height:1.4em;max-width:62ch}
+.ask .fb.good{color:var(--stroke)} .ask .fb.bad{color:var(--text)}
+.choices{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
+.chip{font:inherit;font-size:.9rem;padding:6px 14px;border:1px solid var(--trim);border-radius:999px;background:var(--neutral);color:var(--ink);cursor:pointer}
+.chip[aria-pressed="true"]{background:var(--blue-lt);border-color:var(--blue-dk)}
+.chip.right{background:var(--surface);border-color:var(--stroke)} .chip.wrong{background:var(--pink);border-color:var(--text)}
+input[type=number],input[type=text],textarea{font:inherit;font-size:.95rem;padding:7px 12px;border:1px solid var(--trim);background:var(--neutral);color:var(--ink);border-radius:999px;max-width:100%}
+input[type=number]{width:120px;text-align:center}
+textarea{border-radius:12px;width:100%;max-width:62ch;min-height:70px;resize:vertical;font-size:1rem;text-align:left}
+.reply{width:100%;max-width:62ch;text-align:left;border:1px solid var(--trim);border-radius:12px;background:var(--neutral);padding:12px 16px;font-size:1rem;white-space:pre-wrap}
+.em{color:var(--text);white-space:nowrap}
+.closing .quote{font-style:italic;font-size:1.25rem;max-width:56ch;border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);padding:12px 6px;color:var(--ink);margin:0 auto}
+footer{margin-top:34px;margin-inline:-16px;background:var(--text);color:var(--neutral);border-top:1px solid var(--trim);padding:18px 16px;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;font-size:.8rem;letter-spacing:.2em;text-transform:uppercase}
+footer>:first-child{justify-self:start} footer>:nth-child(2){justify-self:center;color:var(--butter);letter-spacing:.5em;padding-left:.5em} footer>:last-child{justify-self:end}
+footer a{color:var(--neutral);text-decoration:none;border-bottom:1px solid var(--trim)}
+@media (max-width:560px){footer{grid-template-columns:1fr;gap:6px;text-align:center} footer>*{justify-self:center!important}}
+</style>
+
+<div class="wrap">
+
+<header class="frame butter" aria-label="Title">
+  <div class="hero"><img src="img/arch.webp" alt="A tunnel of apple trees trained over iron arches, red apples hanging from the canopy, grass path beneath"></div>
+  <p class="aux credit">Photograph: BBC</p>
+  <div class="title">
+    <div class="small">Stata, from import to regression</div>
+    <h1>The Do-File</h1>
+    <div class="orn">✦ · ✦</div>
+  </div>
+  <div class="row" role="tablist" aria-label="Information">
+    <button type="button" class="btn" role="tab" id="tabRules" aria-selected="false" aria-controls="rules">How to use this page</button>
+    <a class="btn" href="orchards.csv" download>Download orchards.csv</a>
+  </div>
+  <div class="tabpanel" id="rules" role="tabpanel" hidden>
+    <p>The dataset is 120 orchards: region, variety, whether organic, age of the trees, rainfall, number of trees, and yield in kilograms per tree. Download the file, open Stata, and work down the page. Each station gives the commands to type into a do-file and the output Stata should return for this dataset, so you can check your own screen against the page. The last station checks whether you read the regression correctly.</p>
+    <p class="aux">Nothing here is stored. Answers stay in your browser.</p>
+  </div>
+</header>
+
+<div class="node"><div class="stem"></div><div class="dot"></div><span class="tag">Station I · Import</span></div>
+
+<section class="frame mint" aria-label="Import">
+  <span class="sign">Get the data in</span>
+  <p>Save the file somewhere you can find. In Stata, File, Import, Text data (delimited), choose the file and accept the defaults. Stata writes the equivalent command in the Results window. Copy that line into a new do-file so the import can be repeated.</p>
+  <div class="code"><div class="bar"><span>orchards.do</span><button type="button" data-copy="c1">Copy</button></div><pre id="c1"><span class="c">* Week 7. Orchards. Change the path to where you saved the file.</span>
+clear all
+import delimited "orchards.csv", clear
+describe</pre></div>
+  <div class="out"><div class="bar">Stata should return</div><pre id="o1"></pre></div>
+  <p class="aux">Two variables are strings, marked str. Stata can count them but not average them.</p>
+</section>
+
+<div class="node"><div class="stem"></div><div class="dot"></div><span class="tag">Station II · Clean</span></div>
+
+<section class="frame butter" aria-label="Clean">
+  <span class="sign">Rename and label</span>
+  <p>Variable names are for typing; labels are for reading. Rename the two that are awkward, then label every variable so that tables and graphs explain themselves.</p>
+  <div class="code"><div class="bar"><span>orchards.do</span><button type="button" data-copy="c2">Copy</button></div><pre id="c2">rename rain_mm rain
+rename yield_kg yield
+label variable rain "Annual rainfall, mm"
+label variable yield "Yield, kg per tree"
+label variable age "Age of trees, years"
+label variable organic "Organic certified (1 = yes)"
+label variable trees "Number of trees"
+describe rain yield age organic</pre></div>
+  <div class="out"><div class="bar">Stata should return</div><pre id="o2"></pre></div>
+</section>
+
+<div class="node"><div class="stem"></div><div class="dot"></div><span class="tag">Station III · Describe</span></div>
+
+<section class="frame celadon" aria-label="Describe">
+  <span class="sign">Generate, summarise, tabulate</span>
+  <p>Make a new variable with generate, summarise the numeric ones, then tabulate the categorical ones, alone and against each other.</p>
+  <div class="code"><div class="bar"><span>orchards.do</span><button type="button" data-copy="c3">Copy</button></div><pre id="c3">generate rain_cm = rain / 10
+generate total_kg = yield * trees
+summarize
+tabulate variety
+tabulate region organic</pre></div>
+  <div class="out"><div class="bar">Stata should return</div><pre id="o3"></pre></div>
+  <div class="ask">
+    <div class="q">From the summarize table: what is the mean yield, in kg per tree, to one decimal place?</div>
+    <div class="row"><input type="number" id="qMean" step="0.1" placeholder="kg"><button type="button" class="btn" id="bMean">Check</button></div>
+    <div class="fb" id="fMean"></div>
+  </div>
+</section>
+
+<div class="node"><div class="stem"></div><div class="dot"></div><span class="tag">Station IV · Graph</span></div>
+
+<section class="frame blue" aria-label="Graph">
+  <span class="sign">Look before you regress</span>
+  <div class="code"><div class="bar"><span>orchards.do</span><button type="button" data-copy="c4">Copy</button></div><pre id="c4">scatter yield rain
+histogram yield, bin(15)</pre></div>
+  <div class="pair">
+    <div><canvas id="scat" width="600" height="420" aria-label="Scatter plot of yield against rainfall"></canvas><span class="aux">scatter yield rain</span></div>
+    <div><canvas id="hist" width="600" height="420" aria-label="Histogram of yield"></canvas><span class="aux">histogram yield, bin(15)</span></div>
+  </div>
+  <div class="ask">
+    <div class="q">What does the scatter plot suggest about the relation between rainfall and yield?</div>
+    <div class="choices" id="scatChoices"><button type="button" class="chip" data-v="pos">Higher rainfall goes with higher yield</button><button type="button" class="chip" data-v="neg">Higher rainfall goes with lower yield</button><button type="button" class="chip" data-v="none">No relation</button></div>
+    <div class="fb" id="fScat"></div>
+  </div>
+</section>
+
+<div class="node"><div class="stem"></div><div class="dot"></div><span class="tag">Station V · Regress</span></div>
+
+<section class="frame pink" aria-label="Regress">
+  <span class="sign">Yield on rainfall, age and organic</span>
+  <p>Type help regress first and read the Quick start. Then fit the model with robust standard errors.</p>
+  <div class="code"><div class="bar"><span>orchards.do</span><button type="button" data-copy="c5">Copy</button></div><pre id="c5">help regress
+regress yield rain age organic, robust</pre></div>
+  <div class="out"><div class="bar">Stata should return · click any number to see what it is</div><pre id="o5"></pre></div>
+  <div class="note" id="noteReg"><b>Click a number in the output.</b> Each part of the table is explained here.</div>
+</section>
+
+<div class="node"><div class="stem"></div><div class="dot"></div><span class="tag">Station VI · Interpret</span></div>
+
+<section class="frame mauve" aria-label="Interpret">
+  <span class="sign">Read it correctly</span>
+  <p>Four checks the page can mark, then one it cannot.</p>
+  <div class="ask">
+    <div class="q">1. Holding age and organic status fixed, 100 mm more rain is associated with what change in yield, in kg per tree? One decimal place.</div>
+    <div class="row"><input type="number" id="q1" step="0.1" placeholder="kg"><button type="button" class="btn" id="b1">Check</button></div>
+    <div class="fb" id="f1"></div>
+  </div>
+  <div class="ask">
+    <div class="q">2. Is the organic coefficient statistically different from zero at the 5% level?</div>
+    <div class="choices" id="q2"><button type="button" class="chip" data-v="yes">Yes</button><button type="button" class="chip" data-v="no">No</button></div>
+    <div class="fb" id="f2"></div>
+  </div>
+  <div class="ask">
+    <div class="q">3. What share of the variation in yield does the model explain? Percent, no decimals.</div>
+    <div class="row"><input type="number" id="q3" step="1" placeholder="%"><button type="button" class="btn" id="b3">Check</button></div>
+    <div class="fb" id="f3"></div>
+  </div>
+  <div class="ask">
+    <div class="q">4. The constant is the predicted yield for an orchard with</div>
+    <div class="choices" id="q4"><button type="button" class="chip" data-v="avg">average rain, average age, not organic</button><button type="button" class="chip" data-v="zero">zero rain, trees aged zero, not organic</button><button type="button" class="chip" data-v="org">average rain and age, organic</button></div>
+    <div class="fb" id="f4"></div>
+  </div>
+  <div class="ask">
+    <div class="q">5. Write the rainfall result as one sentence for a dissertation, then name one reason the coefficient might not be causal.</div>
+    <textarea id="q5a" placeholder="Sentence for the dissertation"></textarea>
+    <textarea id="q5b" placeholder="One reason this might not be causal"></textarea>
+    <div class="row"><button type="button" class="btn primary" id="bClaude" hidden>Check with Claude</button><button type="button" class="btn" id="bCopy">Copy the check for Claude</button></div>
+    <div class="fb" id="f5"></div>
+    <div class="reply" id="reply" hidden></div>
+  </div>
+  <div class="closing"><div class="quote">A regression table reports associations in the units of the data, with a standard error for each. Whether an association is a cause is decided by the design, not by the table. The <a class="em" style="text-decoration:none;border-bottom:1px solid var(--trim)" href="https://jerchenn.github.io/monty-hall/">three doors</a> explain why.</div></div>
+</section>
+
+<footer><span><a href="https://jerchenn.github.io/orchard/">Orchard Census</a></span><span>✦ · ✦</span><span><a href="https://jerchenn.github.io/monty-hall/">Monty Hall</a></span></footer>
+</div>
+
+<script src="data.js"></script>
+<script>
+(function(){
+  const $=id=>document.getElementById(id);
+  const panels={tabRules:'rules'};
+  Object.keys(panels).forEach(k=>$(k).addEventListener('click',()=>{ const open=$(k).getAttribute('aria-selected')==='true'; $(k).setAttribute('aria-selected',String(!open)); $(k).setAttribute('aria-pressed',String(!open)); $(panels[k]).hidden=open; }));
+  document.querySelectorAll('[data-copy]').forEach(b=>b.addEventListener('click',()=>{ const t=$(b.dataset.copy).textContent; const ok=()=>{ b.textContent='Copied'; setTimeout(()=>b.textContent='Copy',1500); };
+    if(navigator.clipboard&&navigator.clipboard.writeText) navigator.clipboard.writeText(t).then(ok).catch(()=>{ b.textContent='Select and copy'; }); else b.textContent='Select and copy'; }));
+
+  // ---- data ----
+  const D=ROWS.map(r=>({id:r[0],region:r[1],variety:r[2],organic:r[3],age:r[4],rain:r[5],trees:r[6],yield:r[7]}));
+  const n=D.length;
+  const mean=a=>a.reduce((s,x)=>s+x,0)/a.length, sd=a=>{ const m=mean(a); return Math.sqrt(a.reduce((s,x)=>s+(x-m)**2,0)/(a.length-1)); };
+  const col=k=>D.map(r=>r[k]);
+  const pad=(s,w)=>{ s=String(s); return s.length>=w?s:' '.repeat(w-s.length)+s; };
+  const lpad=(s,w)=>{ s=String(s); return s.length>=w?s:s+' '.repeat(w-s.length); };
+  const g=(x,d=6)=>{ // Stata-like %9.0g: up to d significant digits, no trailing zeros
+    if(Number.isInteger(x)) return String(x); let s=x.toPrecision(d); if(s.includes('e')) s=x.toFixed(4); if(s.includes('.')) s=s.replace(/0+$/,'').replace(/\.$/,''); return s; };
+
+  // ---- Station I: describe ----
+  const vars1=[['id','int','%8.0g'],['region','str5','%9s'],['variety','str7','%9s'],['organic','byte','%8.0g'],['age','byte','%8.0g'],['rain_mm','int','%8.0g'],['trees','int','%8.0g'],['yield_kg','float','%9.0g']];
+  let o1='Contains data\n  Observations:           '+n+'                  \n     Variables:             8                  \n'+'-'.repeat(78)+'\nVariable      Storage   Display    Value\n    name         type    format    label      Variable label\n'+'-'.repeat(78)+'\n';
+  vars1.forEach(([v,t,f])=>{ o1+=lpad(v,14)+lpad(t,10)+lpad(f,11)+'\n'; });
+  o1+='-'.repeat(78)+'\nSorted by: \n     Note: Dataset has changed since last saved.';
+  $('o1').textContent=o1;
+
+  // ---- Station II: describe after labels ----
+  const vars2=[['rain','int','%8.0g','Annual rainfall, mm'],['yield','float','%9.0g','Yield, kg per tree'],['age','byte','%8.0g','Age of trees, years'],['organic','byte','%8.0g','Organic certified (1 = yes)']];
+  let o2='Variable      Storage   Display    Value\n    name         type    format    label      Variable label\n'+'-'.repeat(78)+'\n';
+  vars2.forEach(([v,t,f,l])=>{ o2+=lpad(v,14)+lpad(t,10)+lpad(f,11)+lpad('',11)+l+'\n'; });
+  $('o2').textContent=o2.trimEnd();
+
+  // ---- Station III: summarize + tabulate ----
+  D.forEach(r=>{ r.rain_cm=r.rain/10; r.total_kg=+(r.yield*r.trees).toFixed(1); });
+  const numeric=['id','organic','age','rain','trees','yield','rain_cm','total_kg'];
+  let o3='. summarize\n\n    Variable |        Obs        Mean    Std. dev.       Min        Max\n-------------+---------------------------------------------------------\n';
+  const sumLine=(name,a)=>pad(name,12)+' |'+pad(a.length,11)+pad(g(mean(a),7),12)+pad(g(sd(a),7),12)+pad(g(Math.min(...a)),10)+pad(g(Math.max(...a)),11)+'\n';
+  const strLine=name=>pad(name,12)+' |'+pad(0,11)+'\n';
+  o3+=sumLine('id',col('id'))+strLine('region')+strLine('variety')+sumLine('organic',col('organic'))+sumLine('age',col('age'))+'-------------+---------------------------------------------------------\n'+sumLine('rain',col('rain'))+sumLine('trees',col('trees'))+sumLine('yield',col('yield'))+sumLine('rain_cm',col('rain_cm'))+sumLine('total_kg',col('total_kg'));
+  const counts=(k)=>{ const m=new Map(); D.forEach(r=>m.set(r[k],(m.get(r[k])||0)+1)); return [...m.entries()].sort(); };
+  o3+='\n. tabulate variety\n\n    variety |      Freq.     Percent        Cum.\n------------+-----------------------------------\n';
+  let cum=0; counts('variety').forEach(([v,c])=>{ cum+=c; o3+=pad(v,11)+' |'+pad(c,11)+pad((100*c/n).toFixed(2),12)+pad((100*cum/n).toFixed(2),12)+'\n'; });
+  o3+='------------+-----------------------------------\n'+pad('Total',11)+' |'+pad(n,11)+pad('100.00',12)+'\n';
+  o3+='\n. tabulate region organic\n\n           |       organic\n    region |         0          1 |     Total\n-----------+----------------------+----------\n';
+  const regs=counts('region').map(x=>x[0]); let t0=0,t1=0;
+  regs.forEach(rg=>{ const a=D.filter(r=>r.region===rg&&r.organic===0).length, b=D.filter(r=>r.region===rg&&r.organic===1).length; t0+=a; t1+=b; o3+=pad(rg,10)+' |'+pad(a,10)+pad(b,11)+' |'+pad(a+b,10)+'\n'; });
+  o3+='-----------+----------------------+----------\n'+pad('Total',10)+' |'+pad(t0,10)+pad(t1,11)+' |'+pad(n,10);
+  $('o3').textContent=o3;
+  const MEANY=mean(col('yield'));
+  $('bMean').addEventListener('click',()=>{ const v=parseFloat($('qMean').value); const ok=isFinite(v)&&Math.abs(v-MEANY)<0.06; $('fMean').textContent=ok?'Yes, '+MEANY.toFixed(1)+' kg per tree, read from the yield row.':'Not that. Look down the Mean column to the yield row.'; $('fMean').className='fb '+(ok?'good':'bad'); });
+
+  // ---- Station IV: graphs ----
+  function axes(ctx,W,H,L,R,T,B,xlo,xhi,ylo,yhi,xl,yl){
+    ctx.clearRect(0,0,W,H); ctx.strokeStyle='#D8C8A0'; ctx.lineWidth=1; ctx.strokeRect(L,T,W-L-R,H-T-B);
+    ctx.fillStyle='#6E5140'; ctx.font='15px Cormorant Garamond, serif'; ctx.textAlign='center'; ctx.textBaseline='top';
+    for(let k=0;k<=4;k++){ const x=xlo+(xhi-xlo)*k/4; ctx.fillText(g(x,4),L+(W-L-R)*k/4,H-B+6); }
+    ctx.textAlign='right'; ctx.textBaseline='middle'; for(let k=0;k<=4;k++){ const y=ylo+(yhi-ylo)*k/4; ctx.fillText(g(y,4),L-6,H-B-(H-T-B)*k/4); }
+    ctx.textAlign='center'; ctx.textBaseline='bottom'; ctx.fillText(xl,(L+W-R)/2,H-4); ctx.save(); ctx.translate(14,(T+H-B)/2); ctx.rotate(-Math.PI/2); ctx.fillText(yl,0,0); ctx.restore();
+    return [v=>L+(v-xlo)/(xhi-xlo)*(W-L-R), v=>H-B-(v-ylo)/(yhi-ylo)*(H-T-B)];
+  }
+  (function(){ const cv=$('scat'), ctx=cv.getContext('2d'); const [X,Y]=axes(ctx,cv.width,cv.height,56,16,16,44,300,1200,0,100,'Annual rainfall, mm','Yield, kg per tree');
+    ctx.fillStyle='#4F5D75'; D.forEach(r=>{ ctx.beginPath(); ctx.arc(X(r.rain),Y(r.yield),3.5,0,Math.PI*2); ctx.fill(); }); })();
+  (function(){ const cv=$('hist'), ctx=cv.getContext('2d'); const ys=col('yield'), lo=Math.min(...ys), hi=Math.max(...ys), bins=15, w=(hi-lo)/bins; const c=new Array(bins).fill(0); ys.forEach(y=>{ c[Math.min(bins-1,Math.floor((y-lo)/w))]++; });
+    const dens=c.map(x=>x/(n*w)); const [X,Y]=axes(ctx,cv.width,cv.height,56,16,16,44,lo,hi,0,Math.max(...dens)*1.05,'Yield, kg per tree','Density');
+    ctx.fillStyle='#4F5D75'; c.forEach((x,b)=>{ const x0=X(lo+b*w), x1=X(lo+(b+1)*w); ctx.fillRect(x0+1,Y(dens[b]),x1-x0-2,Y(0)-Y(dens[b])); }); })();
+  [...$('scatChoices').children].forEach(b=>b.addEventListener('click',()=>{ [...$('scatChoices').children].forEach(x=>{x.setAttribute('aria-pressed','false');x.classList.remove('right','wrong');}); b.setAttribute('aria-pressed','true'); const ok=b.dataset.v==='pos'; b.classList.add(ok?'right':'wrong'); $('fScat').textContent=ok?'Yes. The cloud rises from left to right. The regression puts a number on the slope.':'Look again at where the cloud sits on the left against the right.'; $('fScat').className='fb '+(ok?'good':'bad'); }));
+
+  // ---- Station V: OLS with HC1 robust standard errors ----
+  function solve(A,b){ const m=A.length; const M=A.map((r,i)=>[...r,b[i]]); for(let c=0;c<m;c++){ let p=c; for(let r=c+1;r<m;r++) if(Math.abs(M[r][c])>Math.abs(M[p][c])) p=r; [M[c],M[p]]=[M[p],M[c]]; for(let r=0;r<m;r++){ if(r===c) continue; const f=M[r][c]/M[c][c]; for(let k=c;k<=m;k++) M[r][k]-=f*M[c][k]; } } return M.map((r,i)=>r[m]/r[i]); }
+  function inv(A){ const m=A.length; return Array.from({length:m},(_,j)=>solve(A,A.map((_,i)=>i===j?1:0))).map((colv,j)=>colv).reduce((acc,colv,j)=>{ colv.forEach((v,i)=>{ acc[i]=acc[i]||[]; acc[i][j]=v; }); return acc; },[]); }
+  const names=['rain','age','organic','_cons'];
+  const X=D.map(r=>[r.rain,r.age,r.organic,1]), y=col('yield'), k=4;
+  const XtX=Array.from({length:k},(_,i)=>Array.from({length:k},(_,j)=>X.reduce((s,x)=>s+x[i]*x[j],0)));
+  const Xty=Array.from({length:k},(_,i)=>X.reduce((s,x,r)=>s+x[i]*y[r],0));
+  const b=solve(XtX,Xty); const e=y.map((v,r)=>v-X[r].reduce((s,x,i)=>s+x*b[i],0));
+  const XtXi=inv(XtX); const meat=Array.from({length:k},(_,i)=>Array.from({length:k},(_,j)=>X.reduce((s,x,r)=>s+x[i]*x[j]*e[r]*e[r],0)));
+  const mul=(A,B)=>A.map(r=>B[0].map((_,j)=>r.reduce((s,v,i)=>s+v*B[i][j],0)));
+  const V=mul(mul(XtXi,meat),XtXi).map(r=>r.map(v=>v*n/(n-k)));
+  const se=V.map((r,i)=>Math.sqrt(r[i])), t=b.map((v,i)=>v/se[i]);
+  // t and F distributions via the regularized incomplete beta
+  function betacf(a,bb,x){ let m2,aa,c=1,d=1-(a+bb)*x/(a+1),h; if(Math.abs(d)<1e-30)d=1e-30; d=1/d; h=d; for(let m=1;m<=200;m++){ m2=2*m; aa=m*(bb-m)*x/((a-1+m2)*(a+m2)); d=1+aa*d; if(Math.abs(d)<1e-30)d=1e-30; c=1+aa/c; if(Math.abs(c)<1e-30)c=1e-30; d=1/d; h*=d*c; aa=-(a+m)*(a+bb+m)*x/((a+m2)*(a+1+m2)); d=1+aa*d; if(Math.abs(d)<1e-30)d=1e-30; c=1+aa/c; if(Math.abs(c)<1e-30)c=1e-30; d=1/d; const del=d*c; h*=del; if(Math.abs(del-1)<3e-12) break; } return h; }
+  function lgam(z){ const c=[76.18009172947146,-86.50532032941677,24.01409824083091,-1.231739572450155,0.1208650973866179e-2,-0.5395239384953e-5]; let x=z,yv=z,tmp=x+5.5; tmp-=(x+0.5)*Math.log(tmp); let ser=1.000000000190015; for(let j=0;j<6;j++) ser+=c[j]/++yv; return -tmp+Math.log(2.5066282746310005*ser/x); }
+  function ibeta(a,bb,x){ if(x<=0) return 0; if(x>=1) return 1; const bt=Math.exp(lgam(a+bb)-lgam(a)-lgam(bb)+a*Math.log(x)+bb*Math.log(1-x)); return x<(a+1)/(a+bb+2)?bt*betacf(a,bb,x)/a:1-bt*betacf(bb,a,1-x)/bb; }
+  const tcdf=(tv,df)=>{ const p=0.5*ibeta(df/2,0.5,df/(df+tv*tv)); return tv>=0?1-p:p; };
+  const tp=(tv,df)=>2*(1-tcdf(Math.abs(tv),df));
+  const tinv=(p,df)=>{ let lo=0,hi=50; for(let i=0;i<80;i++){ const mid=(lo+hi)/2; if(tcdf(mid,df)<p) lo=mid; else hi=mid; } return (lo+hi)/2; };
+  const fcdf=(f,d1,d2)=>1-ibeta(d2/2,d1/2,d2/(d2+d1*f));
+  const df=n-k, tcrit=tinv(0.975,df);
+  const Vs=[0,1,2].map(i=>[0,1,2].map(j=>V[i][j])); const bs=[b[0],b[1],b[2]]; const Vsi=inv(Vs);
+  const F=bs.reduce((s,bi,i)=>s+bi*bs.reduce((s2,bj,j)=>s2+Vsi[i][j]*bj,0),0)/3; const pF=1-fcdf(F,3,df);
+  const ybar=mean(y), SST=y.reduce((s,v)=>s+(v-ybar)**2,0), SSE=e.reduce((s,v)=>s+v*v,0), R2=1-SSE/SST, rmse=Math.sqrt(SSE/df);
+  const f3=v=>Number(v).toFixed(3), f7=v=>{ const s=v.toPrecision(7); return s.includes('e')?v.toFixed(4):s.replace(/0+$/,'').replace(/\.$/,''); };
+  const H=(txt,key)=>'<span class="h" data-k="'+key+'">'+txt+'</span>';
+  let o5='. regress yield rain age organic, robust\n\nLinear regression                               '+H('Number of obs     =        '+n,'nobs')+'\n                                                '+H('F(3, '+df+')         =      '+F.toFixed(2),'F')+'\n                                                '+H('Prob > F          =      '+pF.toFixed(4),'pF')+'\n                                                '+H('R-squared         =      '+R2.toFixed(4),'r2')+'\n                                                '+H('Root MSE          =      '+rmse.toFixed(4),'rmse')+'\n\n';
+  o5+='------------------------------------------------------------------------------\n             |               Robust\n       yield | Coefficient  std. err.      t    P>|t|     [95% conf. interval]\n-------------+----------------------------------------------------------------\n';
+  names.forEach((nm,i)=>{ const lo=b[i]-tcrit*se[i], hi=b[i]+tcrit*se[i]; o5+=pad(nm,12)+' |'+H(pad(f7(b[i]),12),'b'+i)+H(pad(f7(se[i]),11),'se'+i)+H(pad(t[i].toFixed(2),9),'t'+i)+H(pad(tp(t[i],df).toFixed(3),9),'p'+i)+H(pad(f7(lo),13)+pad(f7(hi),12),'ci'+i)+'\n'; });
+  o5+='------------------------------------------------------------------------------';
+  $('o5').innerHTML=o5;
+  const NOTES={nobs:'<b>Number of obs</b>. The orchards used in the fit. Any row missing a variable is dropped, so check this against the dataset size.',
+    F:'<b>F</b>. Tests all three slopes at once against the hypothesis that every one is zero. With robust errors Stata uses a Wald test.',
+    pF:'<b>Prob > F</b>. The p-value of that joint test. Below 0.05, the model as a whole explains yield better than its mean alone.',
+    r2:'<b>R-squared</b>. The share of the variation in yield that the three regressors account for. Here '+(100*R2).toFixed(0)+'%. Not a measure of causation and not a measure of whether the coefficients are right.',
+    rmse:'<b>Root MSE</b>. The standard deviation of the residuals, in kg per tree: the typical miss of the fitted line.',
+    b0:'<b>Coefficient on rain</b>. Each extra millimetre of rain is associated with '+f3(b[0])+' kg more yield per tree, holding age and organic fixed. Multiply by 100 for a 100 mm change.',
+    b1:'<b>Coefficient on age</b>. Each extra year of tree age is associated with '+f3(b[1])+' kg per tree, holding rain and organic fixed. The relation is likely curved in truth; a squared term would show that.',
+    b2:'<b>Coefficient on organic</b>. Organic orchards yield '+f3(b[2])+' kg per tree more than non-organic ones with the same rain and age. A 0/1 variable reads as a difference between groups.',
+    b3:'<b>Constant</b>. The predicted yield when rain, age and organic are all zero. Outside the range of the data, so a fitted anchor rather than a meaningful orchard.',
+    se0:'<b>Robust std. err.</b> The uncertainty of the rain coefficient, allowing the spread of residuals to differ across orchards (heteroskedasticity).',se1:'<b>Robust std. err.</b> for age.',se2:'<b>Robust std. err.</b> for organic. Compare with the coefficient: about '+(b[2]/se[2]).toFixed(1)+' standard errors from zero.',se3:'<b>Robust std. err.</b> for the constant.',
+    t0:'<b>t</b>. Coefficient divided by its standard error. Beyond about 1.98 in either direction, with '+df+' degrees of freedom, the 5% test rejects zero.',t1:'<b>t</b> for age.',t2:'<b>t</b> for organic.',t3:'<b>t</b> for the constant.',
+    p0:'<b>P>|t|</b>. The two-tailed p-value: the chance of a t this far from zero if the true coefficient were zero. Stata prints 0.000 for anything below 0.0005.',p1:'<b>P>|t|</b> for age.',p2:'<b>P>|t|</b> for organic. Compare with 0.05.',p3:'<b>P>|t|</b> for the constant.',
+    ci0:'<b>95% confidence interval</b>. Coefficient plus or minus '+tcrit.toFixed(2)+' standard errors. The range of rain effects consistent with the data at 95%.',ci1:'<b>95% confidence interval</b> for age.',ci2:'<b>95% confidence interval</b> for organic. If the interval spans zero, the 5% test does not reject zero.',ci3:'<b>95% confidence interval</b> for the constant.'};
+  $('o5').addEventListener('click',e=>{ const h=e.target.closest('.h'); if(!h) return; document.querySelectorAll('#o5 .h').forEach(x=>x.setAttribute('aria-pressed','false')); h.setAttribute('aria-pressed','true'); $('noteReg').innerHTML=NOTES[h.dataset.k]||''; });
+
+  // ---- Station VI: checks ----
+  const good=(id,msg)=>{ $(id).textContent=msg; $(id).className='fb good'; }, bad=(id,msg)=>{ $(id).textContent=msg; $(id).className='fb bad'; };
+  $('b1').addEventListener('click',()=>{ const v=parseFloat($('q1').value), truth=100*b[0]; if(!isFinite(v)) return bad('f1','Type a number.'); if(Math.abs(v-truth)<0.06) good('f1','Yes: 100 × '+f3(b[0])+' = '+truth.toFixed(1)+' kg per tree, holding the other two fixed.'); else if(Math.abs(v-b[0])<0.01) bad('f1','That is the change for 1 mm. The question asks about 100 mm.'); else bad('f1','Multiply the rain coefficient by 100.'); });
+  const chipQ=(id,fid,right,msgOk,msgNo)=>[...$(id).children].forEach(c=>c.addEventListener('click',()=>{ [...$(id).children].forEach(x=>{x.setAttribute('aria-pressed','false');x.classList.remove('right','wrong');}); c.setAttribute('aria-pressed','true'); const ok=c.dataset.v===right; c.classList.add(ok?'right':'wrong'); (ok?good:bad)(fid,ok?msgOk:msgNo); }));
+  const pOrg=tp(t[2],df);
+  chipQ('q2','f2',pOrg<0.05?'yes':'no','Right. P>|t| for organic is '+pOrg.toFixed(3)+', '+(pOrg<0.05?'below':'above')+' 0.05, and the confidence interval '+(pOrg<0.05?'excludes':'includes')+' zero.','Read the P>|t| column for organic and compare with 0.05, or check whether the interval crosses zero.');
+  $('b3').addEventListener('click',()=>{ const v=parseFloat($('q3').value); if(!isFinite(v)) return bad('f3','Type a number.'); if(Math.abs(v-100*R2)<=1) good('f3','Yes: R-squared is '+R2.toFixed(4)+', so about '+(100*R2).toFixed(0)+'%. The rest is other things and noise.'); else if(Math.abs(v-R2)<0.02) bad('f3','That is the proportion. The question asks for percent.'); else bad('f3','Read R-squared in the header and multiply by 100.'); });
+  chipQ('q4','f4','zero','Right, and such an orchard does not exist, so the constant anchors the line rather than describing a case.','The constant is the prediction when every regressor equals zero, whatever that means in practice.');
+
+  // ---- Station VI: Claude, inside the artifact viewer or by copied prompt ----
+  const outputText=()=>$('o5').textContent;
+  function buildPrompt(){ return 'You are checking a student\'s reading of a regression table from a first quantitative methods class. Be specific and brief (under 120 words), name any error plainly, and do not rewrite their sentences for them. Judge against this rubric: the sentence must give the direction, the size in the units of the data, the conditioning (holding the other regressors fixed), a statement of uncertainty, and must use the language of association rather than cause. The reason must be a genuine threat to causal interpretation (omitted variable, reverse causation, selection, measurement) stated for this setting.\n\nStata output:\n'+outputText()+'\n\nStudent sentence: '+($('q5a').value.trim()||'(blank)')+'\nStudent reason: '+($('q5b').value.trim()||'(blank)'); }
+  $('bCopy').addEventListener('click',()=>{ if(!$('q5a').value.trim()&&!$('q5b').value.trim()) return bad('f5','Write something first.'); const p=buildPrompt(); const ok=()=>good('f5','Copied. Paste it into claude.ai and read the reply against the rubric.'); if(navigator.clipboard&&navigator.clipboard.writeText) navigator.clipboard.writeText(p).then(ok).catch(()=>bad('f5','Copy failed; select the text and copy by hand.')); else bad('f5','Copy is not available here.'); });
+  (async()=>{ if(!(window.claude&&window.claude.use)) return; const sample=await window.claude.use('sample'); if(!sample) return; $('bClaude').hidden=false;
+    $('bClaude').addEventListener('click',async()=>{ if(!$('q5a').value.trim()&&!$('q5b').value.trim()) return bad('f5','Write something first.'); $('bClaude').disabled=true; $('reply').hidden=false; $('reply').textContent='Thinking...'; $('f5').textContent='';
+      try{ await sample(buildPrompt(),{modelTier:'default',cache:false,onText:({text})=>{ $('reply').textContent=text||'Thinking...'; }}); }
+      catch(err){ $('reply').hidden=true; if(err&&err.code==='not_granted'){ $('bClaude').hidden=true; bad('f5','Claude is not allowed for this page here. Use the copy button instead.'); } else bad('f5','Claude could not answer just now. Use the copy button instead.'); }
+      $('bClaude').disabled=false; }); })();
+})();
+</script>
+</body>
+</html>
