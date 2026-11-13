@@ -93,6 +93,12 @@ footer{margin-top:34px;margin-inline:-16px;background:var(--pink);color:var(--ro
 footer .orn{color:var(--trim-dk);letter-spacing:.5em;padding-left:.5em}
 footer a{color:var(--rose);text-decoration:none;border-bottom:1px solid var(--trim)}
 
+
+/* slide scrolling: each block is a snap target, arrow keys move between blocks, a counter shows the position */
+html{scroll-snap-type:y proximity;scroll-padding-top:16px}
+.wrap>header.frame,.wrap>section.frame{scroll-snap-align:start;scroll-margin-top:16px;min-height:calc(100vh - 56px);align-content:center}
+.counter{position:fixed;right:16px;bottom:16px;z-index:9;font-family:var(--mono);font-size:11px;letter-spacing:.2em;padding:6px 12px;border:1px solid var(--trim);border-radius:999px;background:var(--label-bg);color:var(--rose)}
+@media (max-width:560px){.wrap>header.frame,.wrap>section.frame{min-height:0}}
 </style>
 
 <div class="wrap">
@@ -120,7 +126,7 @@ footer a{color:var(--rose);text-decoration:none;border-bottom:1px solid var(--tr
 <section class="frame" aria-label="Import">
   <span class="sign">Get the data in</span>
   <p>Save the file somewhere you can find. In Stata, File, Import, Text data (delimited), choose the file and accept the defaults. Stata writes the equivalent command in the Results window. Copy that line into a new do-file so the import can be repeated.</p>
-  <div class="code"><div class="bar"><span>apples.do</span><button type="button" data-copy="c1">Copy</button></div><pre id="c1"><span class="c">* Week 7. Apple prices. Change the path to where you saved the file.</span>
+  <div class="code"><div class="bar"><span>apples.do</span><button type="button" data-copy="c1">Copy</button></div><pre id="c1"><span class="c">* Week 6. Apple prices. Change the path to where you saved the file.</span>
 clear all
 import delimited "apples.csv", clear
 describe
@@ -422,6 +428,22 @@ regress price i.east##i.post, vce(cluster town_id)</pre></div>
       try{ await sample(buildPrompt(),{modelTier:'default',cache:false,onText:({text})=>{ $('reply').textContent=text||'Thinking...'; }}); }
       catch(err){ $('reply').hidden=true; if(err&&err.code==='not_granted'){ $('bClaude').hidden=true; bad('f6','Claude is not allowed for this page here. Use the copy button instead.'); } else bad('f6','Claude could not answer just now. Use the copy button instead.'); }
       $('bClaude').disabled=false; }); })();
+})();
+</script>
+
+<script>
+(function(){
+  const blocks=[...document.querySelectorAll('.wrap>header.frame, .wrap>section.frame')];
+  if(!blocks.length) return;
+  const c=document.createElement('div'); c.className='counter'; c.setAttribute('aria-live','polite'); document.body.appendChild(c);
+  const current=()=>{ let best=0,bd=1e9; blocks.forEach((b,i)=>{ const d=Math.abs(b.getBoundingClientRect().top-16); if(d<bd){bd=d;best=i;} }); return best; };
+  const show=()=>{ c.textContent=(current()+1)+' / '+blocks.length; };
+  const go=i=>{ i=Math.max(0,Math.min(blocks.length-1,i)); blocks[i].scrollIntoView({behavior:'smooth',block:'start'}); };
+  document.addEventListener('keydown',e=>{ const t=e.target; if(t&&(t.tagName==='INPUT'||t.tagName==='TEXTAREA'||t.tagName==='SELECT')) return;
+    if(e.key==='ArrowDown'||e.key==='PageDown'||e.key===' '||e.key==='ArrowRight'){ e.preventDefault(); go(current()+1); }
+    else if(e.key==='ArrowUp'||e.key==='PageUp'||e.key==='ArrowLeft'){ e.preventDefault(); go(current()-1); }
+    else if(e.key==='Home'){ e.preventDefault(); go(0); } else if(e.key==='End'){ e.preventDefault(); go(blocks.length-1); } });
+  document.addEventListener('scroll',show,{passive:true}); show();
 })();
 </script>
 </body>
