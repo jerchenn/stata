@@ -94,9 +94,8 @@ footer .orn{color:var(--trim-dk);letter-spacing:.5em;padding-left:.5em}
 footer a{color:var(--rose);text-decoration:none;border-bottom:1px solid var(--trim)}
 
 
-/* slide scrolling: each block is a snap target, arrow keys move between blocks, a counter shows the position */
-html{scroll-snap-type:y proximity;scroll-padding-top:16px}
-.wrap>header.frame,.wrap>section.frame{scroll-snap-align:start;scroll-margin-top:16px;min-height:calc(100vh - 56px);align-content:center}
+/* slide spacing: each block fills the window; arrow keys move between blocks */
+.wrap>header.frame,.wrap>section.frame{scroll-margin-top:16px;min-height:calc(100vh - 56px);align-content:center}
 .counter{position:fixed;right:16px;bottom:16px;z-index:9;font-family:var(--mono);font-size:11px;letter-spacing:.2em;padding:6px 12px;border:1px solid var(--trim);border-radius:999px;background:var(--label-bg);color:var(--rose)}
 @media (max-width:560px){.wrap>header.frame,.wrap>section.frame{min-height:0}}
 </style>
