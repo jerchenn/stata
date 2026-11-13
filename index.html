@@ -171,11 +171,6 @@ summarize price rain income import_share east post
 tabulate region
 tabstat price, by(year) statistics(mean sd n)</pre></div>
   <div class="out"><div class="bar">Stata should return</div><pre id="o3"></pre></div>
-  <div class="ask">
-    <div class="q">From the tabstat table: by how many pence did the mean price rise between 2018 and 2023? Whole pence.</div>
-    <div class="row"><input type="number" id="qRise" step="1" placeholder="pence"><button type="button" class="btn" id="bRise">Check</button></div>
-    <div class="fb" id="fRise"></div>
-  </div>
 </section>
 
 <div class="node"><div class="stem"></div><div class="dot"></div><span class="tag">Station IV · Graph</span></div>
@@ -213,11 +208,6 @@ regress price rain income import_share, robust</pre></div>
     <div class="row"><input type="number" id="q1" step="0.1" placeholder="pence"><button type="button" class="btn" id="b1">Check</button></div>
     <div class="fb" id="f1"></div>
   </div>
-  <div class="ask">
-    <div class="q">2. Does this regression say what caused prices to rise?</div>
-    <div class="choices" id="q2"><button type="button" class="chip" data-v="no">No. Each coefficient is an association, holding the others fixed</button><button type="button" class="chip" data-v="yes">Yes. The significant coefficients are the causes</button></div>
-    <div class="fb" id="f2"></div>
-  </div>
 </section>
 
 <div class="node"><div class="stem"></div><div class="dot"></div><span class="tag">Station VI · Cause</span></div>
@@ -234,22 +224,17 @@ regress price i.east##i.post, vce(cluster town_id)</pre></div>
   <div class="out"><div class="bar">Stata should return · difference in differences · click any number</div><pre id="o6"></pre></div>
   <div class="note" id="noteDid"><b>Click a number in the table.</b> The interaction row is the one that matters.</div>
   <div class="ask">
-    <div class="q">3. The naive comparison says that after 2021 prices in the eastern towns were higher than in the other towns. What does the difference in differences subtract from that gap, to get at the frost?</div>
+    <div class="q">2. The naive comparison says that after 2021 prices in the eastern towns were higher than in the other towns. What does the difference in differences subtract from that gap, to get at the frost?</div>
     <div class="choices" id="q3"><button type="button" class="chip" data-v="gap">The gap between East and other towns that already existed before the frost</button><button type="button" class="chip" data-v="rain">The effect of rainfall</button><button type="button" class="chip" data-v="trend">The rise in prices in the East before 2021</button></div>
     <div class="fb" id="f3"></div>
   </div>
   <div class="ask">
-    <div class="q">4. By how many pence per kilogram did the frost raise prices in the eastern towns, according to the difference in differences? Whole pence.</div>
+    <div class="q">3. By how many pence per kilogram did the frost raise prices in the eastern towns, according to the difference in differences? Whole pence.</div>
     <div class="row"><input type="number" id="q4" step="1" placeholder="pence"><button type="button" class="btn" id="b4">Check</button></div>
     <div class="fb" id="f4"></div>
   </div>
   <div class="ask">
-    <div class="q">5. That number is a causal effect only if one assumption holds. Which?</div>
-    <div class="choices" id="q5"><button type="button" class="chip" data-v="pt">Without the frost, eastern prices would have followed the same path as the other towns</button><button type="button" class="chip" data-v="norm">The errors are normally distributed</button><button type="button" class="chip" data-v="r2">R-squared is high enough</button></div>
-    <div class="fb" id="f5"></div>
-  </div>
-  <div class="ask">
-    <div class="q">6. Write the result as one causal sentence for a dissertation, then name one way the parallel trends assumption could fail in this setting.</div>
+    <div class="q">4. Write the result as one causal sentence for a dissertation, then name one way the parallel trends assumption could fail in this setting.</div>
     <textarea id="q6a" placeholder="Sentence for the dissertation"></textarea>
     <textarea id="q6b" placeholder="One way parallel trends could fail here"></textarea>
     <div class="row"><button type="button" class="btn primary" id="bClaude" hidden>Check with Claude</button><button type="button" class="btn" id="bCopy">Copy the check for Claude</button></div>
@@ -327,7 +312,6 @@ regress price i.east##i.post, vce(cluster town_id)</pre></div>
   o3+='---------+------------------------------\n'+pad('Total',8)+' |'+pad(g(mean(col('price')),7),10)+pad(g(sd(col('price')),7),10)+pad(n,10)+'\n----------------------------------------';
   $('o3').textContent=o3;
   const RISE=yrMean[2023]-yrMean[2018];
-  $('bRise').addEventListener('click',()=>{ const v=parseFloat($('qRise').value); const ok=isFinite(v)&&Math.abs(v-RISE)<=1; $('fRise').textContent=ok?'Yes: '+yrMean[2023].toFixed(1)+' minus '+yrMean[2018].toFixed(1)+' is about '+RISE.toFixed(0)+' pence, a rise of '+(100*RISE/yrMean[2018]).toFixed(0)+'%.':'Subtract the 2018 mean from the 2023 mean in the tabstat table.'; $('fRise').className='fb '+(ok?'good':'bad'); });
 
   // ---- Station IV ----
   function axes(ctx,W,H,L,R,T,B,xlo,xhi,ylo,yhi,xl,yl,xt){
@@ -403,7 +387,6 @@ regress price i.east##i.post, vce(cluster town_id)</pre></div>
   $('o5').addEventListener('click',e=>{ const h=e.target.closest('.h'); if(!h) return; document.querySelectorAll('#o5 .h').forEach(x=>x.setAttribute('aria-pressed','false')); h.setAttribute('aria-pressed','true'); $('noteReg').innerHTML=NA[h.dataset.k]||''; });
   const good=(id,msg)=>{ $(id).textContent=msg; $(id).className='fb good'; }, bad=(id,msg)=>{ $(id).textContent=msg; $(id).className='fb bad'; };
   $('b1').addEventListener('click',()=>{ const v=parseFloat($('q1').value), truth=100*mA.b[0]; if(!isFinite(v)) return bad('f1','Type a number.'); if(Math.abs(v-truth)<0.06) good('f1','Yes: 100 × '+mA.b[0].toFixed(3)+' = '+truth.toFixed(1)+' pence, holding income and imports fixed. Wetter, lower.'); else if(Math.abs(v-mA.b[0])<0.01) bad('f1','That is the change for 1 mm. The question asks about 100 mm.'); else bad('f1','Multiply the rain coefficient by 100 and keep the sign.'); });
-  chipQ('q2','f2','no','Right. The table reports what moves with price. Rain may well cause lower prices, but nothing in this regression establishes that, and income almost certainly does not act on apples at all.','Look again. A coefficient is a slope in the data, and significance says the slope is not zero, not that the regressor did anything to price.');
 
   // Station VI: naive and DiD
   const mN=ols(D.filter(r=>r.post===1),r=>[r.east,1]);
@@ -428,7 +411,6 @@ regress price i.east##i.post, vce(cluster town_id)</pre></div>
   $('o6').addEventListener('click',e=>{ const h=e.target.closest('.h'); if(!h) return; document.querySelectorAll('#o6 .h').forEach(x=>x.setAttribute('aria-pressed','false')); h.setAttribute('aria-pressed','true'); $('noteDid').innerHTML=ND[h.dataset.k]||''; });
   chipQ('q3','f3','gap','Yes. Prices in the East were already '+mD.b[0].toFixed(1)+' pence higher before the frost. The naive comparison reads that as frost; the difference in differences removes the pre-existing gap and the common rise.','Think about what the East looked like before 2021 and what the other towns did after.');
   $('b4').addEventListener('click',()=>{ const v=parseFloat($('q4').value); if(!isFinite(v)) return bad('f4','Type a number.'); if(Math.abs(v-DID)<=1) good('f4','Yes: the east#post coefficient, '+DID.toFixed(1)+' pence per kg, with a 95% interval from '+(mD.b[2]-mD.tcrit*mD.se[2]).toFixed(1)+' to '+(mD.b[2]+mD.tcrit*mD.se[2]).toFixed(1)+'.'); else if(Math.abs(v-mN.b[0])<=1) bad('f4','That is the naive gap after 2021, which still contains the pre-frost difference.'); else bad('f4','Read the east#post row of the second table.'); });
-  chipQ('q5','f5','pt','Right: parallel trends. The pre-2021 lines are the only evidence for the assumption, and they cannot prove the counterfactual.','Normality and R-squared have nothing to do with whether the comparison identifies the frost.');
 
   // Claude check
   const outputText=()=>$('o5').textContent+'\n\n'+$('o6').textContent;
