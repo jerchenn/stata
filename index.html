@@ -95,16 +95,15 @@ footer a{color:var(--rose);text-decoration:none;border-bottom:1px solid var(--tr
 
 
 /* slide spacing: each block fills the window; arrow keys move between blocks */
-.wrap>header.frame,.wrap>section.frame{scroll-margin-top:16px;min-height:calc(100vh - 56px);align-content:center}
+.wrap>header.frame,.wrap>section.frame{scroll-margin-top:16px}
 .counter{position:fixed;right:16px;bottom:16px;z-index:9;font-family:var(--mono);font-size:11px;letter-spacing:.2em;padding:6px 12px;border:1px solid var(--trim);border-radius:999px;background:var(--label-bg);color:var(--rose)}
-@media (max-width:560px){.wrap>header.frame,.wrap>section.frame{min-height:0}}
+.credits{font-size:.72rem;color:var(--ink-warm);margin-top:18px}
 </style>
 
 <div class="wrap">
 
 <header class="frame" aria-label="Title">
   <div class="hero"><img src="img/cezanne.webp" alt="Apples on a white cloth beside a ginger pot, a green jar and a sugar bowl, painted by Cézanne"></div>
-  <p class="aux credit">Paul Cézanne, Still Life with Apples, 1893 to 1894. J. Paul Getty Museum, Los Angeles</p>
   <div class="title">
     <div class="small">Why did apple prices rise?</div>
     <h1>The Do-File</h1>
@@ -195,6 +194,7 @@ twoway (connected mprice year if east == 1, sort) ///
 
 <section class="frame" aria-label="Regress">
   <span class="sign">An association</span>
+  <p class="aux">"All models are wrong, some are useful." George E. P. Box.</p>
   <p>Type help regress and read the Quick start. Then fit price on rainfall, income and the import share with robust standard errors. This is the regression a dissertation reports. Click any number in the output to see what it is.</p>
   <div class="code"><div class="bar"><span>apples.do</span><button type="button" data-copy="c5">Copy</button></div><pre id="c5">help regress
 regress price rain income import_share, robust</pre></div>
@@ -258,6 +258,8 @@ regress price i.east##i.post, vce(cluster town_id)</pre></div>
   <p>The frost did the work on this page: a shock that chose the treated towns for reasons unconnected with their prices. The next page shows five ways researchers find such a shock, or make one, in the studies the lecture uses: a lottery in Rajasthan, a state line in the Marcellus shale, a referendum in California, a colonial boundary in Peru, and a draft lottery.</p>
   <a class="btn primary" href="https://jerchenn.github.io/designs/" style="text-decoration:none">Go to the five designs</a>
 </section>
+
+<p class="credits">Images: Paul Cézanne, Still Life with Apples, 1893 to 1894. J. Paul Getty Museum, Los Angeles</p>
 
 <footer><span><a href="https://jerchenn.github.io/drds/">Home</a></span><span class="orn">✦</span><span><a href="https://jerchenn.github.io/ideas/">Big Ideas</a></span><span class="orn">✦</span><span><a href="https://jerchenn.github.io/orchard/">Orchard Census</a></span><span class="orn">✦</span><span><a href="https://jerchenn.github.io/monty-hall/">Monty Hall</a></span><span class="orn">✦</span><span>The Do-File</span><span class="orn">✦</span><span><a href="https://jerchenn.github.io/designs/">Five Designs</a></span></footer>
 </div>
